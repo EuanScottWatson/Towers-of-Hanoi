@@ -21,7 +21,7 @@ class Hanoi:
 
     def display(self, screen):
         gen = self.font.render(" ".join([str(n) for n in self.binary]), False, (0, 0, 0))
-        screen.blit(gen, (425, 10))
+        screen.blit(gen, (50, 10))
 
         for i in range(3):
             base = pygame.Rect(75 + (250 + 50) * i, self.h - 75, 250, 40)
@@ -32,7 +32,7 @@ class Hanoi:
         for i, r in enumerate(self.pegs):
             for j, disc in enumerate(r):
                 if disc != float('inf'):
-                    width = 250 * disc / self.no_pegs
+                    width = 235 * disc / self.no_pegs + 15
                     height = 30
                     x = 75 + (250 + 50) * i + ((250 - width) // 2)
                     y = self.h - 75 - height - (j * height)
@@ -60,10 +60,12 @@ class Hanoi:
         pygame.display.flip()
 
     def run_logic(self):
-        if self.run and self.pegs[2][-1] != 1 and self.pegs[1][-1] != 1:
+        if self.run:
             self.move_peg()
 
     def move_peg(self):
+        if self.pegs[2][-1] == 1 or self.pegs[1][-1] == 1:
+            return
         self.binary, disc = self.count(self.binary)
 
         r, c = np.where(self.pegs==disc)
@@ -115,7 +117,7 @@ if __name__ == "__main__":
     towers = 3
     if len(sys.argv) == 2:
         try:
-            towers = int(sys.argv[1])
+            towers = min(int(sys.argv[1]), 21)
         except:
             print("Incorrect number of towers: %s" % sys.argv[1])
     main(towers)
