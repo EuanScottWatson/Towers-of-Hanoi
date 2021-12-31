@@ -31,6 +31,8 @@ def solve(n):
         next_c = (pegs[next_r]==np.inf).argmax(axis=0)
         pegs[next_r][next_c] = disc
 
+        print("Move disc %d to peg number %d" % (disc, next_r + 1))
+
     print(pegs)
 
 if __name__ == "__main__":
