@@ -10,16 +10,20 @@ class Hanoi:
         self.no_pegs = n
         self.w, self.h = w, h
 
+        # inf represents no disc, n represents nth smallest disc
         self.pegs = np.ones((3, n)) * np.inf
         for i in range(n):
             self.pegs[0][i] = n - i
+
+        # Binary number used for solution
+        self.binary = [0] * n
     
         self.font = pygame.font.SysFont('Comic Sans MS', 40)
-        self.binary = [0] * n
 
         self.run = False
 
     def display(self, screen):
+        # Function to draw all necessary objects
         gen = self.font.render(" ".join([str(n) for n in self.binary]), False, (0, 0, 0))
         screen.blit(gen, (50, 10))
 
@@ -40,6 +44,7 @@ class Hanoi:
                     pygame.draw.rect(screen, (50, 50, 50), base, 0)
 
     def events(self):
+        # Handles user input
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return True
@@ -60,18 +65,22 @@ class Hanoi:
         pygame.display.flip()
 
     def run_logic(self):
+        # Only run if the program isn't paused
         if self.run:
             self.move_peg()
 
     def move_peg(self):
         if self.pegs[2][-1] == 1 or self.pegs[1][-1] == 1:
+            # Stop once the solution is found
             return
         self.binary, disc = self.count(self.binary)
 
+        # Determine the row and column of the current disc to be moved
         r, c = np.where(self.pegs==disc)
         r, c = r[0], c[0]
         self.pegs[r][c] = np.inf
 
+        # Find where it should go next and put it there
         next_smallest = min(self.pegs[(r + 1) % 3])
         cond = next_smallest > disc
         next_r = (r + 1) % 3 if cond else (r + 2) % 3
@@ -79,10 +88,12 @@ class Hanoi:
         self.pegs[next_r][next_c] = disc
 
     def count(self, number):
+        # Simple incremementor for binary numbers
         digit = len(number) - 1
         while not all(number):
             if number[digit] == 0:
                 number[digit] = 1
+                # Return the digit that was toggled to a 1 for the solution
                 return number, len(number) - digit
             elif number[digit] == 1:
                 number[digit] = 0
@@ -114,10 +125,11 @@ def main(towers):
 
 
 if __name__ == "__main__":
+    # Default value is 3, otherwise user input limited between 1 and 21
     towers = 3
     if len(sys.argv) == 2:
         try:
-            towers = min(int(sys.argv[1]), 21)
+            towers = max(1, min(int(sys.argv[1]), 21))
         except:
             print("Incorrect number of towers: %s" % sys.argv[1])
     main(towers)
